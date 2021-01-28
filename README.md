@@ -41,7 +41,7 @@ curl -X POST "http://127.0.0.1:8080/sentence/news/ru" \
   -H  "Content-Type: application/json" \
   -d "{\"text\":\"Как уточняет ИА SakhaNews, инцидент произошел в ноябре 2020 года. Мальчик шел с мамой в детский сад, когда наступил на крышку канализационного колодца.\"}"
 ```
-
+<br>
 ### Swagger UI:
 
 Navigate to [http://127.0.0.1:8080/swagger-ui](http://127.0.0.1:8080/swagger-ui) for [Swagger UI](https://swagger.io/tools/swagger-ui/) experience.
