@@ -44,4 +44,6 @@ curl -X POST "http://127.0.0.1:8080/sentence/news/ru" \
 
 ### Swagger UI:
 
-Navigate to [http://127.0.0.1:8080/swagger-ui](http://127.0.0.1:8080/swagger-ui) for Swagger UI experience.
+Navigate to [http://127.0.0.1:8080/swagger-ui](http://127.0.0.1:8080/swagger-ui) for [Swagger UI](https://swagger.io/tools/swagger-ui/) experience.
+
+![swagger](https://github.com/livelace/digator-opennlp/swagger.png)
