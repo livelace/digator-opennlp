@@ -11,7 +11,7 @@
 
 ```shell
 # Start daemon.
-user@localhost ~ $ docker run --rm -p 8080:8080 -ti docker.io/livelace/digator-opennlp:master-1.8.4
+user@localhost ~ $ docker run --rm -p 8080:8080 -ti ghcr.io/livelace/digator-opennlp:master-1.8.4
 __  ____  __  _____   ___  __ ____  ______ 
  --/ __ \/ / / / _ | / _ \/ //_/ / / / __/ 
  -/ /_/ / /_/ / __ |/ , _/ ,< / /_/ /\ \   
