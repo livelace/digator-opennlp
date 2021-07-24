@@ -5,6 +5,8 @@ ARG             OPENNLP_VERSION
 ENV             SOURCE_PATH="/data/opennlp/model/news/ru/${OPENNLP_VERSION}/latest"
 ENV             DESTINATION_PATH="/models"
 
+USER            root
+
 RUN             mkdir -p "${DESTINATION_PATH}/news/ru" && \
                 cp "${SOURCE_PATH}/combined.txt.bin" "${DESTINATION_PATH}/news/ru/combined.bin" && \
                 cp "${SOURCE_PATH}/date.txt.bin" "${DESTINATION_PATH}/news/ru/date.bin" && \
@@ -20,5 +22,7 @@ RUN             mkdir -p "${DESTINATION_PATH}/news/ru" && \
                 cp "${SOURCE_PATH}/statistics.txt" "${DESTINATION_PATH}/news/ru/statistics.txt"
 
 COPY            "target/digator-opennlp-1.0-SNAPSHOT-runner.jar" "/digator-opennlp.jar"
+
+USER            user
 
 CMD             ["java", "-jar", "/digator-opennlp.jar"]
