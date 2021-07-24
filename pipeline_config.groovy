@@ -4,11 +4,11 @@ jte {
 
 libraries {
     git {
-        repo_url = 'git@git.livelace.ru:livelace/digator-opennlp.git'
+        repo_url = 'https://github.com/livelace/digator-opennlp.git'
     }
     kaniko {
         destination = 'data/digator-opennlp:${VERSION}-1.8.4'
-        options = '--build-arg=OPENNLP_VERSION=1.8.4'
+        options = '--build-arg OPENNLP_VERSION=1.8.4'
     }
     maven {
         options = '-Dquarkus.package.type=uber-jar -Dopennlp.version=1.8.4'
