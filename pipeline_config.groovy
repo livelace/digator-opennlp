@@ -10,6 +10,10 @@ libraries {
         options = '-Dquarkus.package.type=uber-jar -Dopennlp.version=1.8.4'
     }
     mattermost
+    nexus {
+        source = 'target/digator-opennlp-1.0-SNAPSHOT-runner.jar'
+        destination = 'dists-internal/digator-opennlp/digator-opennlp-${VERSION}-1.8.4.jar'
+    }
     version
 }
 
