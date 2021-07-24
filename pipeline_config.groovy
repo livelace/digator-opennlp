@@ -7,7 +7,7 @@ libraries {
         repo_url = 'https://github.com/livelace/digator-opennlp.git'
     }
     kaniko {
-        destination = 'data/digator-opennlp:latest-1.8.4'
+        destination = 'data/digator-opennlp:master-1.8.4'
         options = '--build-arg OPENNLP_VERSION=1.8.4'
     }
     maven {
@@ -16,7 +16,7 @@ libraries {
     mattermost
     nexus {
         source = 'target/digator-opennlp-1.0-SNAPSHOT-runner.jar'
-        destination = 'dists-internal/digator-opennlp/digator-opennlp-${VERSION}-1.8.4.jar'
+        destination = 'dists-internal/digator-opennlp/digator-opennlp-master-1.8.4.jar'
     }
     version
 }
