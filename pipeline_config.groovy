@@ -3,7 +3,7 @@ libraries {
         repo_url = "https://github.com/livelace/digator-opennlp.git"
     }
     k8s {
-        image = "harbor-core.k8s-2.livelace.ru/dev/jvm:latest"
+        build_image = "harbor-core.k8s-2.livelace.ru/dev/jvm:latest"
     }
     kaniko {
         destination = "data/digator-opennlp:master-${env.OPENNLP_VERSION}"
