@@ -2,7 +2,7 @@ FROM            harbor-core.k8s-2.livelace.ru/dev/jvm:latest
 
 ARG             OPENNLP_VERSION
 
-ENV             SOURCE_PATH="/data/opennlp/model/news/ru/${OPENNLP_VERSION}/latest"
+ENV             SOURCE_PATH="data/opennlp/model/news/ru/${OPENNLP_VERSION}/latest"
 ENV             DESTINATION_PATH="/models"
 
 USER            root
