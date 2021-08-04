@@ -22,7 +22,7 @@ COPY            "${SOURCE_PATH}/sentence.txt.bin" "${DESTINATION_PATH}/sentence.
 COPY            "${SOURCE_PATH}/time.txt.bin" "${DESTINATION_PATH}/time.bin"
 COPY            "${SOURCE_PATH}/statistics.txt" "${DESTINATION_PATH}/statistics.txt"
 
-COPY            "source/target/digator-opennlp-1.0-SNAPSHOT-runner.jar" "/digator-opennlp.jar"
+COPY            "work/target/digator-opennlp-1.0-SNAPSHOT-runner.jar" "/digator-opennlp.jar"
 
 USER            user
 
