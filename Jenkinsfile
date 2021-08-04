@@ -15,4 +15,8 @@ properties([
 
 utils_check_first_run()
 
-k8s_build()
+def volume = [
+        ["build1-opennlp-storage-shared", "data/opennlp", "ro"]
+]
+
+k8s_build([], volume)
