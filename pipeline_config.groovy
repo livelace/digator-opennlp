@@ -7,6 +7,10 @@ libraries {
     }
     k8s_build {
         image = "harbor-core.k8s-2.livelace.ru/dev/jvm:latest"
+
+        volume = """
+            build1-opennlp-storage-shared, data/opennlp, ro
+        """
     }
     kaniko {
         destination = "data/digator-opennlp:master-${env.OPENNLP_VERSION}"
