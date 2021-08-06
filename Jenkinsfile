@@ -15,8 +15,4 @@ properties([
 
 utils_check_first_run()
 
-k8s_build({
-    stage("AAAAAAAAAa") {
-        sh "echo 123"
-    }
-})
+k8s_build()
