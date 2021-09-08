@@ -9,16 +9,16 @@ USER            root
 
 RUN             mkdir -p "${DESTINATION_PATH}"
 
-COPY            "${SOURCE_PATH}/all.bin" "${DESTINATION_PATH}/all.bin"
-COPY            "${SOURCE_PATH}/date.bin" "${DESTINATION_PATH}/date.bin"
+COPY            "${SOURCE_PATH}/all.bin"   "${DESTINATION_PATH}/all.bin"
+COPY            "${SOURCE_PATH}/date.bin"  "${DESTINATION_PATH}/date.bin"
 COPY            "${SOURCE_PATH}/event.bin" "${DESTINATION_PATH}/event.bin"
-COPY            "${SOURCE_PATH}/fac.bin" "${DESTINATION_PATH}/fac.bin"
-COPY            "${SOURCE_PATH}/gpe.bin" "${DESTINATION_PATH}/gpe.bin"
-COPY            "${SOURCE_PATH}/loc.bin" "${DESTINATION_PATH}/loc.bin"
+COPY            "${SOURCE_PATH}/fac.bin"   "${DESTINATION_PATH}/fac.bin"
+COPY            "${SOURCE_PATH}/gpe.bin"   "${DESTINATION_PATH}/gpe.bin"
+COPY            "${SOURCE_PATH}/loc.bin"   "${DESTINATION_PATH}/loc.bin"
 COPY            "${SOURCE_PATH}/money.bin" "${DESTINATION_PATH}/money.bin"
-COPY            "${SOURCE_PATH}/org.bin" "${DESTINATION_PATH}/org.bin"
-COPY            "${SOURCE_PATH}/person.bin" "${DESTINATION_PATH}/person.bin"
-COPY            "${SOURCE_PATH}/time.bin" "${DESTINATION_PATH}/time.bin"
+COPY            "${SOURCE_PATH}/org.bin"   "${DESTINATION_PATH}/org.bin"
+COPY            "${SOURCE_PATH}/per.bin"   "${DESTINATION_PATH}/per.bin"
+COPY            "${SOURCE_PATH}/time.bin"  "${DESTINATION_PATH}/time.bin"
 
 #COPY            "${SOURCE_PATH}/sentence.bin" "${DESTINATION_PATH}/sentence.bin"
 
