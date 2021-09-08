@@ -8,21 +8,20 @@ import javax.enterprise.inject.Default;
 import javax.json.Json;
 import javax.json.JsonObject;
 import opennlp.tools.sentdetect.SentenceDetectorME;
-import opennlp.tools.sentdetect.SentenceModel;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.slf4j.Logger;
 
 @ApplicationScoped
 @Default
-public class SentModel {
+public class SentenceModel {
     @ConfigProperty(name = "app.models.path")
     String modelsPath;
 
     final private Logger logger;
     final private HashMap<String, Model> models;
 
-    public SentModel() {
-        this.logger = org.slf4j.LoggerFactory.getLogger(SentModel.class);
+    public SentenceModel() {
+        this.logger = org.slf4j.LoggerFactory.getLogger(SentenceModel.class);
         this.models = new HashMap<>();
     }
 
@@ -80,12 +79,12 @@ public class SentModel {
      *
      */
     private class Model {
-        final private SentenceModel model;
+        final private opennlp.tools.sentdetect.SentenceModel model;
 
         public Model(String dataset, String lang) throws IOException {
             var modelFile = String.format("%s/%s/%s/sentence.bin", modelsPath, dataset, lang);
             var modelIn = new FileInputStream(modelFile);
-            model = new SentenceModel(modelIn);
+            model = new opennlp.tools.sentdetect.SentenceModel(modelIn);
         }
 
         public String[] getSentences(String text) {

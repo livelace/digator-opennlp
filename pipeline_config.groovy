@@ -24,6 +24,7 @@ libraries {
         source = "target/digator-opennlp-1.0-SNAPSHOT-runner.jar"
         destination = "dists-internal/digator-opennlp/digator-opennlp-master-${env.OPENNLP_VERSION}.jar"
     }
+    sonarqube
     utils
 }
 

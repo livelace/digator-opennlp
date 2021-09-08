@@ -8,9 +8,9 @@ import javax.ws.rs.core.MediaType;
 
 @ApplicationScoped
 @Path("/sentence")
-public class Sent {
+public class Sentence {
     @Inject
-    SentModel model;
+    SentenceModel model;
 
     @GET
     @Path("{dataset}/{lang}")
