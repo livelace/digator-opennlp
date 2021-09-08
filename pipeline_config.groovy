@@ -17,6 +17,7 @@ libraries {
         options = "--build-arg OPENNLP_VERSION=${env.OPENNLP_VERSION}"
     }
     maven {
+        force = true
         options = "-Dquarkus.package.type=uber-jar -Dopennlp.version=${env.OPENNLP_VERSION}"
     }
     mattermost
