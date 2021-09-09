@@ -1,5 +1,9 @@
 libraries {
     dependency_check
+    dependency_track {
+        project = "digator-opennlp"
+        version = "latest"
+    }
     git {
         repo_url = "https://github.com/livelace/digator-opennlp.git"
     }
