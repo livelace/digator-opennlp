@@ -1,6 +1,7 @@
 libraries {
     dependency_check
     dependency_track {
+        input = "target/bom.xml"
         project = "digator-opennlp"
         version = "latest"
     }
