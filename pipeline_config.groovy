@@ -1,4 +1,5 @@
 libraries {
+    dependency_check
     git {
         repo_url = "https://github.com/livelace/digator-opennlp.git"
     }
