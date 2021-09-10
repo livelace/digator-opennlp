@@ -3,7 +3,7 @@ libraries {
     dependency_track {
         input = "target/bom.xml"
         project = "digator-opennlp"
-        version = "latest"
+        version = "master-${env.OPENNLP_VERSION}"
     }
     git {
         repo_url = "https://github.com/livelace/digator-opennlp.git"
