@@ -8,7 +8,7 @@ libraries {
     git {
         repo_url = "https://github.com/livelace/digator-opennlp.git"
     }
-    harbor {
+    harbor_replicate {
         policy = "digator-opennlp"
     }
     k8s_build {
