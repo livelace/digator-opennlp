@@ -12,10 +12,8 @@ libraries {
         policy = "digator-opennlp"
     }
     harbor_scan {
-        project = "data"
-        repository = "digator-opennlp"
-        tag = "master-${env.OPENNLP_VERSION}"
-        severity = "low"
+        artifact = "data/digator-opennlp:master-${env.OPENNLP_VERSION}"
+        severity = "medium"
     }
     k8s_build {
         image = "harbor-core.k8s-2.livelace.ru/dev/jvm:latest"
