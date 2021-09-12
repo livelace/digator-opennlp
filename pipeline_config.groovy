@@ -1,7 +1,7 @@
 libraries {
     dependency_check
     dependency_track {
-        input = "target/bom.xml"
+        input = "target/dependency-track.xml"
         project = "digator-opennlp"
         version = "master-${env.OPENNLP_VERSION}"
     }

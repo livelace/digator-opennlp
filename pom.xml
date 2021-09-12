@@ -112,7 +112,7 @@
           <includeTestScope>false</includeTestScope>
           <includeLicenseText>false</includeLicenseText>
           <outputFormat>xml</outputFormat>
-          <outputName>bom</outputName>
+          <outputName>dependency-track</outputName>
         </configuration>
       </plugin>
 
