@@ -17,8 +17,8 @@ public class SentenceModel {
     @ConfigProperty(name = "app.models.path")
     String modelsPath;
 
-    final private Logger logger;
-    final private HashMap<String, Model> models;
+    private final Logger logger;
+    private final HashMap<String, Model> models;
 
     public SentenceModel() {
         this.logger = org.slf4j.LoggerFactory.getLogger(SentenceModel.class);
@@ -72,35 +72,33 @@ public class SentenceModel {
      * @return
      */
     public JsonObject stat(String dataset, String lang) {
-        return Json.createObjectBuilder().add("info", "not implemented. todo: add model stat to ci").build();
+        String msg = String.format("not implemented. todo: add model stat to ci: %s, %s", dataset, lang);
+
+        return Json.createObjectBuilder().add("info", msg).build();
     }
 
     /**
      *
      */
     private class Model {
-        final private opennlp.tools.sentdetect.SentenceModel model;
+        private final opennlp.tools.sentdetect.SentenceModel opennlpModel;
 
         public Model(String dataset, String lang) throws IOException {
             var modelFile = String.format("%s/%s/%s/sentence.bin", modelsPath, dataset, lang);
             var modelIn = new FileInputStream(modelFile);
-            model = new opennlp.tools.sentdetect.SentenceModel(modelIn);
+            opennlpModel = new opennlp.tools.sentdetect.SentenceModel(modelIn);
         }
 
         public String[] getSentences(String text) {
             String[] sentences = new String[0];
             try {
-                var sentenceDetector = new SentenceDetectorME(model);
+                var sentenceDetector = new SentenceDetectorME(opennlpModel);
                 sentences = sentenceDetector.sentDetect(text);
             } catch (Exception e) {
                 logger.error("cannot extract sentences: {}", e.getMessage());
             }
             
             return sentences;
-        }
-
-        public String getStat() {
-            return "not implemented. todo: add model stat to ci";
         }
     }
 }

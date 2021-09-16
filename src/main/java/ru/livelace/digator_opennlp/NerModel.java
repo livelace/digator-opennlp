@@ -21,8 +21,9 @@ public class NerModel {
     @ConfigProperty(name = "app.models.path")
     String modelsPath;
 
-    final private Logger logger;
-    final private HashMap<String, Model> models;
+    private static final String ERROR = "error";
+    private final Logger logger;
+    private final HashMap<String, Model> models;
 
     public NerModel() {
         this.logger = org.slf4j.LoggerFactory.getLogger(NerModel.class);
@@ -77,7 +78,7 @@ public class NerModel {
             var to = from + spanText.toString().length() - lastCharWasSpace;
 
             logger.debug("TYPE: {}, SPAN: {}, BEFORE SPAN: {}, RANGE: {}:{}",
-                    span.getType(), spanText, beforeSpan.toString(), from, to);
+                    span.getType(), spanText, beforeSpan, from, to);
 
             // Set label for item (PER, LOC, FAC etc.).
             var labels = Json.createArrayBuilder();
@@ -139,7 +140,7 @@ public class NerModel {
                 models.put(modelSignature, new Model(dataset, lang, type));
             } catch (Exception e) {
                 logger.error("cannot initialize model: {}", e.getMessage());
-                json.add("error", e.getMessage());
+                json.add(ERROR, e.getMessage());
 
                 return json.build();
             }
@@ -150,14 +151,15 @@ public class NerModel {
         try {
             text = data.getString("text");
         } catch (NullPointerException e) {
-            return Json.createObjectBuilder().add("error", "no data").build();
+            return Json.createObjectBuilder().add(ERROR, "no data").build();
         }
 
         // Tokenize and label data.
         String[] tokens = models.get(modelSignature).getTokens(text);
+        String tokensString = Arrays.toString(tokens);
 
         logger.debug("ORIGINAL: {}", text);
-        logger.debug("TOKENS: {}", Arrays.toString(tokens));
+        logger.debug("TOKENS: {}", tokensString);
 
         var spans = models.get(modelSignature).getLabel(tokens);
 
@@ -170,7 +172,7 @@ public class NerModel {
 
         } else {
             logger.error("unknown format: {}", format);
-            return json.add("error", "unknown format: " + format).build();
+            return json.add(ERROR, "unknown format: " + format).build();
         }
     }
 
@@ -182,27 +184,29 @@ public class NerModel {
      * @return
      */
     public JsonObject stat(String dataset, String lang, String type) {
-        return Json.createObjectBuilder().add("info", "not implemented. todo: add model stat to ci").build();
+        String msg = String.format("not implemented. todo: add model stat to ci: %s, %s, %s", dataset, lang, type);
+
+        return Json.createObjectBuilder().add("info", msg).build();
     }
 
     /**
      *
      */
     private class Model {
-        final private TokenNameFinderModel model;
-        final private SimpleTokenizer tokenizer;
+        private final TokenNameFinderModel opennlpModel;
+        private final SimpleTokenizer opennlpTokenizer;
 
         public Model(String dataset, String lang, String type) throws IOException {
             var modelFile = String.format("%s/%s/%s/%s.bin", modelsPath, dataset, lang, type);
             var modelIn = new FileInputStream(modelFile);
-            model = new TokenNameFinderModel(modelIn);
-            tokenizer = SimpleTokenizer.INSTANCE;
+            opennlpModel = new TokenNameFinderModel(modelIn);
+            opennlpTokenizer = SimpleTokenizer.INSTANCE;
         }
 
         public Span[] getLabel(String[] tokens) {
             Span[] spans = new Span[0];
             try {
-                var nameFinder = new NameFinderME(model);
+                var nameFinder = new NameFinderME(opennlpModel);
                 spans = nameFinder.find(tokens);
                 nameFinder.clearAdaptiveData();
             } catch (Exception e) {
@@ -212,12 +216,8 @@ public class NerModel {
             return spans;
         }
 
-        public String getStat() {
-            return "not implemented. todo: add model stat to ci";
-        }
-
         public String[] getTokens(String text) {
-            return tokenizer.tokenize(text);
+            return opennlpTokenizer.tokenize(text);
         }
     }
 }
