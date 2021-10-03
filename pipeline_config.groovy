@@ -12,7 +12,7 @@ libraries {
     }
     git {
         repo_url = "${APP_REPO}"
-        repo_branch = env.VERSION
+        //repo_branch = env.VERSION
     }
     harbor_replicate {
         policy = "${APP_NAME}"
