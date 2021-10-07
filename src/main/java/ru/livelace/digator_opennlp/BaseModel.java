@@ -12,7 +12,7 @@ import java.nio.file.Path;
 
 public class BaseModel {
     @ConfigProperty(name = "app.models.path")
-    String modelsPath;
+    protected String modelsPath;
 
     protected static final String ERROR = "error";
     protected Logger logger;
