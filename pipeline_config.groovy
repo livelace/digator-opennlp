@@ -29,7 +29,8 @@ libraries {
         options = "--build-arg OPENNLP_VERSION=${env.OPENNLP_VERSION}"
     }
     maven {
-        options = "-Dquarkus.package.type=uber-jar -Dopennlp.version=${env.OPENNLP_VERSION} test"
+        options = "-Dquarkus.package.type=uber-jar -Dopennlp.version=${env.OPENNLP_VERSION}"
+        test = true
     }
     mattermost
     nexus {
