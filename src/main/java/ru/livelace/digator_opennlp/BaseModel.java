@@ -32,7 +32,7 @@ public class BaseModel {
             return Json.createObjectBuilder().add("records", meta[0]).add("labels", meta[1]).build();
 
         } catch (IOException e) {
-            logger.error("cannot get model stat: {}\n{}", modelStat, e.getStackTrace());
+            logger.error("cannot get model stat: {}\n{}", modelStat, e.getMessage());
             return Json.createObjectBuilder().add(ERROR, e.getMessage()).build();
         }
     }
