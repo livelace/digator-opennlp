@@ -30,7 +30,7 @@ libraries {
     }
     maven {
         options = "-Dquarkus.package.type=uber-jar -Dopennlp.version=${env.OPENNLP_VERSION}"
-        test = true
+        //test = true
     }
     mattermost
     nexus {
