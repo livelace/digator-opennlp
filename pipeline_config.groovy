@@ -4,7 +4,7 @@ def APP_VERSION = "${env.VERSION}-${env.OPENNLP_VERSION}"
 
 
 libraries {
-    //dependency_check
+    dependency_check
     dependency_track {
         input = "target/dependency-track.xml"
         project = "${APP_NAME}"
@@ -30,7 +30,7 @@ libraries {
     }
     maven {
         options = "-Dquarkus.package.type=uber-jar -Dopennlp.version=${env.OPENNLP_VERSION}"
-        //test = true
+        test = true
     }
     mattermost
     nexus {
