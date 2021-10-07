@@ -20,6 +20,6 @@ class RootPathTest {
                 .when()
                 .get("/")
                 .then()
-                .statusCode(302);
+                .statusCode(200);
     }
 }
