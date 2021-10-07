@@ -4,7 +4,7 @@ def APP_VERSION = "${env.VERSION}-${env.OPENNLP_VERSION}"
 
 
 libraries {
-    dependency_check
+    //dependency_check
     dependency_track {
         input = "target/dependency-track.xml"
         project = "${APP_NAME}"
