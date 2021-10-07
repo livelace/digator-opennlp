@@ -8,12 +8,14 @@ import javax.ws.rs.core.MediaType;
 
 @ApplicationScoped
 @Path("/ner")
-public class Ner {
+public class NerModelPath {
+    private static final String PATH = "{dataset}/{lang}/{type}";
+
     @Inject
     NerModel model;
 
     @GET
-    @Path("{dataset}/{lang}/{type}")
+    @Path(PATH)
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject stat(
             @PathParam("dataset") String dataset,
@@ -24,7 +26,7 @@ public class Ner {
     }
 
     @POST
-    @Path("{dataset}/{lang}/{type}")
+    @Path(PATH)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject predict(

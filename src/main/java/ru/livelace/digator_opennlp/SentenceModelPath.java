@@ -8,22 +8,24 @@ import javax.ws.rs.core.MediaType;
 
 @ApplicationScoped
 @Path("/sentence")
-public class Sentence {
+public class SentenceModelPath {
+    private static final String PATH = "{dataset}/{lang}";
+
     @Inject
     SentenceModel model;
 
     @GET
-    @Path("{dataset}/{lang}")
+    @Path(PATH)
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject stat(
             @PathParam("dataset") String dataset,
             @PathParam("lang") String lang) {
 
-        return model.stat(dataset, lang);
+        return model.stat(dataset, lang, "");
     }
 
     @POST
-    @Path("{dataset}/{lang}")
+    @Path(PATH)
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public JsonObject predict(

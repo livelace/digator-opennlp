@@ -8,16 +8,10 @@ import javax.enterprise.inject.Default;
 import javax.json.Json;
 import javax.json.JsonObject;
 import opennlp.tools.sentdetect.SentenceDetectorME;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.slf4j.Logger;
 
 @ApplicationScoped
 @Default
-public class SentenceModel {
-    @ConfigProperty(name = "app.models.path")
-    String modelsPath;
-
-    private final Logger logger;
+public class SentenceModel extends BaseModel {
     private final HashMap<String, Model> models;
 
     public SentenceModel() {
@@ -43,18 +37,18 @@ public class SentenceModel {
                 models.put(modelSignature, new Model(dataset, lang));
             } catch (Exception e) {
                 logger.error("cannot initialize model: {}", e.getMessage());
-                json.add("error", e.getMessage());
+                json.add(ERROR, e.getMessage());
 
                 return json.build();
             }
         }
 
-        // Check input data availability.
+        // Check if input data was provided.
         var text = "";
         try {
             text = data.getString("text");
         } catch (NullPointerException e) {
-            return Json.createObjectBuilder().add("error", "no data").build();
+            return Json.createObjectBuilder().add(ERROR, "no data").build();
         }
 
         var sentences = models.get(modelSignature).getSentences(text);
@@ -71,10 +65,9 @@ public class SentenceModel {
      * @param lang
      * @return
      */
-    public JsonObject stat(String dataset, String lang) {
-        String msg = String.format("not implemented. todo: add model stat to ci: %s, %s", dataset, lang);
-
-        return Json.createObjectBuilder().add("info", msg).build();
+    @Override
+    public JsonObject stat(String dataset, String lang, String type) {
+        return super.stat(dataset, lang, "sentence");
     }
 
     /**

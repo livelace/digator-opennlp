@@ -12,17 +12,10 @@ import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.tokenize.SimpleTokenizer;
 import opennlp.tools.util.Span;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
-import org.slf4j.Logger;
 
 @ApplicationScoped
 @Default
-public class NerModel {
-    @ConfigProperty(name = "app.models.path")
-    String modelsPath;
-
-    private static final String ERROR = "error";
-    private final Logger logger;
+public class NerModel extends BaseModel {
     private final HashMap<String, Model> models;
 
     public NerModel() {
@@ -146,7 +139,7 @@ public class NerModel {
             }
         }
 
-        // Check input data availability.
+        // Check if input data was provided.
         var text = "";
         try {
             text = data.getString("text");
@@ -174,19 +167,6 @@ public class NerModel {
             logger.error("unknown format: {}", format);
             return json.add(ERROR, "unknown format: " + format).build();
         }
-    }
-
-    /**
-     * Get information about OpenNLP model.
-     * @param dataset
-     * @param lang
-     * @param type
-     * @return
-     */
-    public JsonObject stat(String dataset, String lang, String type) {
-        String msg = String.format("not implemented. todo: add model stat to ci: %s, %s, %s", dataset, lang, type);
-
-        return Json.createObjectBuilder().add("info", msg).build();
     }
 
     /**
