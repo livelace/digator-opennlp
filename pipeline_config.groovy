@@ -26,10 +26,10 @@ libraries {
     }
     kaniko {
         destination = "data/${APP_NAME}:${APP_VERSION}"
-        options = "--build-arg OPENNLP_VERSION=${env.OPENNLP_VERSION} test"
+        options = "--build-arg OPENNLP_VERSION=${env.OPENNLP_VERSION}"
     }
     maven {
-        options = "-Dquarkus.package.type=uber-jar -Dopennlp.version=${env.OPENNLP_VERSION}"
+        options = "-Dquarkus.package.type=uber-jar -Dopennlp.version=${env.OPENNLP_VERSION} test"
     }
     mattermost
     nexus {
