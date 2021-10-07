@@ -21,6 +21,7 @@ public class BaseModel {
      * Get information about OpenNLP model.
      * @param dataset
      * @param lang
+     * @param type
      * @return
      */
     public JsonObject stat(String dataset, String lang, String type) {
