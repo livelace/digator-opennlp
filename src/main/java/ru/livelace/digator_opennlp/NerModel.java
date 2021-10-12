@@ -69,7 +69,6 @@ public class NerModel extends BaseModel {
         Original text: США<SPACE><SPACE>и страны ЕС пытаются законодательно закрепить антироссийские санкции, поэтому они могут продлиться неопределенно долго.
         Tokenized text: [США, и, страны, ЕС, пытаются, законодательно, закрепить, антироссийские, санкции, ,, поэтому, они, могут, продлиться, неопределенно, долго, .]
         We need these spaces for LabelStudio start-end ranges, otherwise LabelStudio outline entities incorrectly.
-        Also. We have to take into account amount of this spaces for proper offset alignment (TODO: Should be simplified).
          */
 
         var result = Json.createObjectBuilder();
