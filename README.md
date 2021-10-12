@@ -22,14 +22,14 @@ __  ____  __  _____   ___  __ ____  ______
 
 # Named entity extraction (OpenNLP format).
 
-curl -X POST "http://127.0.0.1:8080/ner/news/ru/combined" \
+curl -X POST "http://127.0.0.1:8080/ner/news/ru/all" \
   -H  "accept: application/json" \
   -H  "Content-Type: application/json" \
   -d "{\"text\":\"Руководитель московского департамента торговли и услуг Алексей Немерюк в среду, 27 января, отметил, что, несмотря на снятие ограничений на работу развлекательных заведений города в ночное время перчаточно-масочный режим в них никто не отменял.\"}"
         
 # Named entity extraction (Label Studio format).
 
-curl -X POST "http://127.0.0.1:8080/ner/news/ru/combined?format=label-studio" \
+curl -X POST "http://127.0.0.1:8080/ner/news/ru/all?format=label-studio" \
   -H  "accept: application/json" \
   -H  "Content-Type: application/json" \
   -d "{\"text\":\"Руководитель московского департамента торговли и услуг Алексей Немерюк в среду, 27 января, отметил, что, несмотря на снятие ограничений на работу развлекательных заведений города в ночное время перчаточно-масочный режим в них никто не отменял.\"}" | jq  
@@ -45,6 +45,6 @@ curl -X POST "http://127.0.0.1:8080/sentence/news/ru" \
 
 ### Swagger UI:
 
-Navigate to [http://127.0.0.1:8080/swagger-ui](http://127.0.0.1:8080/swagger-ui) for [Swagger UI](https://swagger.io/tools/swagger-ui/) experience.
+Navigate to [http://127.0.0.1:8080](http://127.0.0.1:8080) for [Swagger UI](https://swagger.io/tools/swagger-ui/) experience.
 
 ![swagger](assets/swagger.png)
