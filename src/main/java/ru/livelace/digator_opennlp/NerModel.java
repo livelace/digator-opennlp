@@ -154,7 +154,7 @@ public class NerModel extends BaseModel {
         if (models.get(modelSignature) == null) {
             try {
                 models.put(modelSignature, new Model(dataset, lang, type));
-                logger.info("model has been loaded: {}/{}/{}/{}.bin", modelsPath, dataset, lang, type);
+                logger.debug("model has been loaded: {}/{}/{}/{}.bin", modelsPath, dataset, lang, type);
             } catch (Exception e) {
                 logger.error("cannot load model: {}", e.getMessage());
                 json.add(ERROR, e.getMessage());
