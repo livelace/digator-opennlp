@@ -16,7 +16,7 @@ import opennlp.tools.util.Span;
 @ApplicationScoped
 @Default
 public class NerModel extends BaseModel {
-    private final static int MAX_SPACES = 10;
+    private static final int MAX_SPACES = 10;
     private final HashMap<String, Model> models;
 
     public NerModel() {
@@ -28,13 +28,33 @@ public class NerModel extends BaseModel {
         var tmp = new StringBuilder(textBefore);
 
         for (int i=0; i < MAX_SPACES; i++) {
+            if (text.contains(tmp + token)) return tmp.append(token).toString();
             tmp.append(" ");
-            if (text.contains(tmp + token)) {
-                return tmp.append(token).toString();
-            }
         }
 
         return "";
+    }
+
+    private String extractTextByOffset(String text, String[] tokens, int start, int end) {
+        var extractedText = new StringBuilder();
+
+        for (int i=start; i < end; i++) {
+            if (text.contains(extractedText + tokens[i])) {
+                extractedText.append(tokens[i]);
+
+            } else {
+                var matched = appendSpacesUntilMatch(text, extractedText.toString(), tokens[i]);
+
+                if (matched.isEmpty()) {
+                    return "";
+
+                } else {
+                    extractedText = new StringBuilder(matched);
+                }
+            }
+        }
+
+        return extractedText.toString();
     }
 
     /**
@@ -44,6 +64,14 @@ public class NerModel extends BaseModel {
      * @return
      */
     private JsonObject formatToLabelStudio(String text, String[] tokens, Span[] spans) {
+        /*
+        The main problem here is the tokenization. Example:
+        Original text: США<SPACE><SPACE>и страны ЕС пытаются законодательно закрепить антироссийские санкции, поэтому они могут продлиться неопределенно долго.
+        Tokenized text: [США, и, страны, ЕС, пытаются, законодательно, закрепить, антироссийские, санкции, ,, поэтому, они, могут, продлиться, неопределенно, долго, .]
+        We need these spaces for LabelStudio start-end ranges, otherwise LabelStudio outline entities incorrectly.
+        Also. We have to take into account amount of this spaces for proper offset alignment (TODO: Should be simplified).
+         */
+
         var result = Json.createObjectBuilder();
         var items = Json.createArrayBuilder();
 
@@ -54,64 +82,31 @@ public class NerModel extends BaseModel {
             item.add("to_name", "text");
             item.add("type", "labels");
 
-            // Calc margins.
-            var textBefore = new StringBuilder();
-            var spanText = new StringBuilder();
+            // Extract text before the span.
+            var textBefore = extractTextByOffset(text, tokens, 0, span.getStart());
 
-            for (int i=0; i < span.getStart(); i++) {
-                if (text.contains(textBefore + tokens[i])) {
-                    textBefore.append(tokens[i]);
+            // Extract span body itself.
+            var spanText = extractTextByOffset(text, tokens, span.getStart(), span.getEnd());
 
-                } else {
-                    var matched = appendSpacesUntilMatch(text, textBefore.toString(), tokens[i]);
+            // Extend textBefore if there is a space at the end, it needs for proper offsets.
+            var textBeforeEndWithSpace = text.substring(0, textBefore.length() + 1);
+            if (textBeforeEndWithSpace.endsWith(" ")) textBefore = textBeforeEndWithSpace;
 
-                    if (matched.isEmpty()) {
-                        var json = Json.createObjectBuilder();
-                        json.add(ERROR, "cannot reassembly data");
-                        return json.build();
-
-                    } else {
-                        textBefore = new StringBuilder(matched);
-                    }
-                }
-            }
-
-            //logger.info("span: {}, textBefore: {}", span, textBefore);
-
-            for (int i=span.getStart(); i < span.getEnd(); i++) {
-                if (text.contains(spanText + tokens[i])) {
-                    spanText.append(tokens[i]);
-
-                } else {
-                    var matched = appendSpacesUntilMatch(text, spanText.toString(), tokens[i]);
-
-                    if (matched.isEmpty()) {
-                        var json = Json.createObjectBuilder();
-                        json.add(ERROR, "cannot reassembly data");
-                        return json.build();
-
-                    } else {
-                        spanText = new StringBuilder(matched);
-                    }
-                }
-            }
-
-            var from = textBefore.length() + 1;
-            var to = from + spanText.length() + 1;
+            var from = textBefore.length();
+            var to = from + spanText.length();
 
             logger.debug("span info: type: {}, start: {}, end: {}, range: {}:{}, text before: \"{}\", text: \"{}\"",
                     span.getType(), span.getStart(), span.getEnd(), from, to, textBefore, spanText);
 
-            // Set label for item (PER, LOC, FAC etc.).
+            // Assembly result.
             var labels = Json.createArrayBuilder();
             labels.add(span.getType());
 
-            // Assembly all together.
             var value = Json.createObjectBuilder();
 
             value.add("start", from);
             value.add("end", to);
-            value.add("text", spanText.toString());
+            value.add("text", spanText);
             value.add("labels", labels);
 
             item.add("value", value);
