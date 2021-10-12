@@ -33,45 +33,49 @@ public class NerModel extends BaseModel {
         var result = Json.createObjectBuilder();
         var items = Json.createArrayBuilder();
 
+        var counter  = 0;
         // Form "item" with "value".
         for (Span span: spans) {
+            logger.info("{}",counter);
+            counter++;
+
             var item = Json.createObjectBuilder();
             item.add("from_name", "label");
             item.add("to_name", "text");
             item.add("type", "labels");
 
             // Calc margins.
-            var beforeSpan = new StringBuilder();
+            var textBefore = new StringBuilder();
             var spanText = new StringBuilder();
 
             for (int i=0; i < span.getStart(); i++) {
-                var tmp = beforeSpan.toString() + String.format("%s ", tokens[i]);
+                var tmp = textBefore + String.format("%s ", tokens[i]);
 
                 if (text.contains(tmp)) {
-                    beforeSpan.append(String.format("%s ", tokens[i]));
+                    textBefore.append(String.format("%s ", tokens[i]));
                 } else {
-                    beforeSpan.append(String.format("%s", tokens[i]));
+                    textBefore.append(String.format("%s", tokens[i]));
                 }
             }
 
-            var lastCharWasSpace = 0;
+            var lastCharIsSpace = 0;
             for (int i=span.getStart(); i < span.getEnd(); i++) {
-                var tmp = spanText.toString() + String.format("%s ", tokens[i]);
+                var tmp = spanText + String.format("%s ", tokens[i]);
 
                 if (text.contains(tmp)) {
                     spanText.append(String.format("%s ", tokens[i]));
-                    lastCharWasSpace = 1;
+                    lastCharIsSpace = 1;
                 } else {
                     spanText.append(String.format("%s", tokens[i]));
-                    lastCharWasSpace = 0;
+                    lastCharIsSpace = 0;
                 }
             }
 
-            var from = beforeSpan.toString().length();
-            var to = from + spanText.toString().length() - lastCharWasSpace;
+            var from = textBefore.length();
+            var to = from + spanText.length() - lastCharIsSpace;
 
-            logger.debug("TYPE: {}, SPAN: {}, BEFORE SPAN: {}, RANGE: {}:{}",
-                    span.getType(), spanText, beforeSpan, from, to);
+            logger.debug("span info: type: {}, text: {}, start: {}, end: {}, text before: {}, range: {}:{}",
+                    span.getType(), spanText, span.getStart(), span.getEnd(), textBefore, from, to);
 
             // Set label for item (PER, LOC, FAC etc.).
             var labels = Json.createArrayBuilder();
@@ -131,8 +135,9 @@ public class NerModel extends BaseModel {
         if (models.get(modelSignature) == null) {
             try {
                 models.put(modelSignature, new Model(dataset, lang, type));
+                logger.info("model has been loaded: {}/{}/{}/{}.bin", modelsPath, dataset, lang, type);
             } catch (Exception e) {
-                logger.error("cannot initialize model: {}", e.getMessage());
+                logger.error("cannot load model: {}", e.getMessage());
                 json.add(ERROR, e.getMessage());
 
                 return json.build();
@@ -140,19 +145,20 @@ public class NerModel extends BaseModel {
         }
 
         // Check if input data was provided.
+        // Replace repeated spaces.
         var text = "";
         try {
-            text = data.getString("text");
+            text = data.getString("text").replaceAll("[ ]+", " ");
         } catch (NullPointerException e) {
-            return Json.createObjectBuilder().add(ERROR, "no data").build();
+            return Json.createObjectBuilder().add(ERROR, "data not provided").build();
         }
 
         // Tokenize and label data.
         String[] tokens = models.get(modelSignature).getTokens(text);
         String tokensString = Arrays.toString(tokens);
 
-        logger.debug("ORIGINAL: {}", text);
-        logger.debug("TOKENS: {}", tokensString);
+        logger.debug("original text: {}", text);
+        logger.debug("original text tokens: {}", tokensString);
 
         var spans = models.get(modelSignature).getLabel(tokens);
 

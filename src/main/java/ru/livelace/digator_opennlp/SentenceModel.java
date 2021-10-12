@@ -36,7 +36,7 @@ public class SentenceModel extends BaseModel {
             try {
                 models.put(modelSignature, new Model(dataset, lang));
             } catch (Exception e) {
-                logger.error("cannot initialize model: {}", e.getMessage());
+                logger.error("cannot load model: {}", e.getMessage());
                 json.add(ERROR, e.getMessage());
 
                 return json.build();
@@ -44,9 +44,10 @@ public class SentenceModel extends BaseModel {
         }
 
         // Check if input data was provided.
+        // Replace repeated spaces.
         var text = "";
         try {
-            text = data.getString("text");
+            text = data.getString("text").replaceAll("[ ]+", " ");
         } catch (NullPointerException e) {
             return Json.createObjectBuilder().add(ERROR, "no data").build();
         }
