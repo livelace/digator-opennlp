@@ -78,7 +78,6 @@ public class NerModel extends BaseModel {
 
             //logger.info("span: {}, textBefore: {}", span, textBefore);
 
-            var lastCharIsSpace = 0;
             for (int i=span.getStart(); i < span.getEnd(); i++) {
                 if (text.contains(spanText + tokens[i])) {
                     spanText.append(tokens[i]);
@@ -97,8 +96,8 @@ public class NerModel extends BaseModel {
                 }
             }
 
-            var from = textBefore.length();
-            var to = from + spanText.length() - lastCharIsSpace;
+            var from = textBefore.length() + 1;
+            var to = from + spanText.length() + 1;
 
             logger.debug("span info: type: {}, start: {}, end: {}, range: {}:{}, text before: \"{}\", text: \"{}\"",
                     span.getType(), span.getStart(), span.getEnd(), from, to, textBefore, spanText);
