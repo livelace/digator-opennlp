@@ -16,11 +16,25 @@ import opennlp.tools.util.Span;
 @ApplicationScoped
 @Default
 public class NerModel extends BaseModel {
+    private final static int MAX_SPACES = 10;
     private final HashMap<String, Model> models;
 
     public NerModel() {
         this.logger = org.slf4j.LoggerFactory.getLogger(NerModel.class);
         this.models = new HashMap<>();
+    }
+
+    private String appendSpacesUntilMatch(String text, String textBefore, String token) {
+        var tmp = new StringBuilder(textBefore);
+
+        for (int i=0; i < MAX_SPACES; i++) {
+            tmp.append(" ");
+            if (text.contains(tmp + token)) {
+                return tmp.append(token).toString();
+            }
+        }
+
+        return "";
     }
 
     /**
@@ -33,12 +47,8 @@ public class NerModel extends BaseModel {
         var result = Json.createObjectBuilder();
         var items = Json.createArrayBuilder();
 
-        var counter  = 0;
         // Form "item" with "value".
         for (Span span: spans) {
-            logger.info("{}",counter);
-            counter++;
-
             var item = Json.createObjectBuilder();
             item.add("from_name", "label");
             item.add("to_name", "text");
@@ -49,33 +59,49 @@ public class NerModel extends BaseModel {
             var spanText = new StringBuilder();
 
             for (int i=0; i < span.getStart(); i++) {
-                var tmp = textBefore + String.format("%s ", tokens[i]);
+                if (text.contains(textBefore + tokens[i])) {
+                    textBefore.append(tokens[i]);
 
-                if (text.contains(tmp)) {
-                    textBefore.append(String.format("%s ", tokens[i]));
                 } else {
-                    textBefore.append(String.format("%s", tokens[i]));
+                    var matched = appendSpacesUntilMatch(text, textBefore.toString(), tokens[i]);
+
+                    if (matched.isEmpty()) {
+                        var json = Json.createObjectBuilder();
+                        json.add(ERROR, "cannot reassembly data");
+                        return json.build();
+
+                    } else {
+                        textBefore = new StringBuilder(matched);
+                    }
                 }
             }
 
+            //logger.info("span: {}, textBefore: {}", span, textBefore);
+
             var lastCharIsSpace = 0;
             for (int i=span.getStart(); i < span.getEnd(); i++) {
-                var tmp = spanText + String.format("%s ", tokens[i]);
+                if (text.contains(spanText + tokens[i])) {
+                    spanText.append(tokens[i]);
 
-                if (text.contains(tmp)) {
-                    spanText.append(String.format("%s ", tokens[i]));
-                    lastCharIsSpace = 1;
                 } else {
-                    spanText.append(String.format("%s", tokens[i]));
-                    lastCharIsSpace = 0;
+                    var matched = appendSpacesUntilMatch(text, spanText.toString(), tokens[i]);
+
+                    if (matched.isEmpty()) {
+                        var json = Json.createObjectBuilder();
+                        json.add(ERROR, "cannot reassembly data");
+                        return json.build();
+
+                    } else {
+                        spanText = new StringBuilder(matched);
+                    }
                 }
             }
 
             var from = textBefore.length();
             var to = from + spanText.length() - lastCharIsSpace;
 
-            logger.debug("span info: type: {}, text: {}, start: {}, end: {}, text before: {}, range: {}:{}",
-                    span.getType(), spanText, span.getStart(), span.getEnd(), textBefore, from, to);
+            logger.debug("span info: type: {}, start: {}, end: {}, range: {}:{}, text before: \"{}\", text: \"{}\"",
+                    span.getType(), span.getStart(), span.getEnd(), from, to, textBefore, spanText);
 
             // Set label for item (PER, LOC, FAC etc.).
             var labels = Json.createArrayBuilder();
@@ -86,7 +112,7 @@ public class NerModel extends BaseModel {
 
             value.add("start", from);
             value.add("end", to);
-            value.add("text", spanText.toString().trim());
+            value.add("text", spanText.toString());
             value.add("labels", labels);
 
             item.add("value", value);
@@ -145,10 +171,10 @@ public class NerModel extends BaseModel {
         }
 
         // Check if input data was provided.
-        // Replace repeated spaces.
+        // Replace "&nbsp;" with space.
         var text = "";
         try {
-            text = data.getString("text").replaceAll("[ ]+", " ");
+            text = data.getString("text").replaceAll("\\xa0", " ");
         } catch (NullPointerException e) {
             return Json.createObjectBuilder().add(ERROR, "data not provided").build();
         }
