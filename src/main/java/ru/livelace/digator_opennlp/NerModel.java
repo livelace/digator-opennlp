@@ -126,12 +126,16 @@ public class NerModel extends BaseModel {
      * @param spans
      * @return
      */
-    private static String formatToOpennlp(String[] tokens, Span[] spans) {
+    private String formatToOpennlp(String[] tokens, Span[] spans) {
         for (Span span: spans) {
             tokens[span.getStart()] = String.format("<START:%s> %s", span.getType(), tokens[span.getStart()]);
             tokens[span.getEnd()-1] = String.format("%s <END>", tokens[span.getEnd()-1]);
         }
-        return String.join(" ", tokens);
+
+        var labeledString = String.join(" ", tokens);
+        logger.debug("labeled text: \"{}\"", labeledString);
+
+        return labeledString;
     }
 
     /**
@@ -153,8 +157,11 @@ public class NerModel extends BaseModel {
         // Initialize model.
         if (models.get(modelSignature) == null) {
             try {
-                models.put(modelSignature, new Model(dataset, lang, type));
-                logger.debug("model has been loaded: {}/{}/{}/{}.bin", modelsPath, dataset, lang, type);
+                var model = new Model(dataset, lang, type);
+                models.put(modelSignature, model);
+                logger.debug("model has been loaded: {}/{}/{}/{}.bin, {}, {}",
+                        modelsPath, dataset, lang, type, model.getVersion(), model.getLanguage());
+
             } catch (Exception e) {
                 logger.error("cannot load model: {}", e.getMessage());
                 json.add(ERROR, e.getMessage());
@@ -221,8 +228,16 @@ public class NerModel extends BaseModel {
             return spans;
         }
 
+        public String getLanguage() {
+            return opennlpModel.getLanguage();
+        }
+
         public String[] getTokens(String text) {
             return opennlpTokenizer.tokenize(text);
+        }
+
+        public String getVersion() {
+            return opennlpModel.getVersion().toString();
         }
     }
 }
