@@ -1,7 +1,7 @@
 def APP_NAME = "digator-opennlp"
 def APP_REPO = "https://github.com/livelace/digator-opennlp.git"
 def APP_VERSION = "${env.VERSION}-${env.OPENNLP_VERSION}"
-def JAR_VERSION = env.VERSION + '-${GIT_COMMIT_SHORT}-' + env.OPENNLP_VERSION
+def GIT_VERSION = env.VERSION + '-${GIT_COMMIT_SHORT}-' + env.OPENNLP_VERSION
 
 
 libraries {
@@ -30,12 +30,12 @@ libraries {
         options = "--build-arg OPENNLP_VERSION=${env.OPENNLP_VERSION}"
     }
     maven {
-        options = "-Dquarkus.application.version=${JAR_VERSION} -Dquarkus.package.type=uber-jar -Dopennlp.version=${env.OPENNLP_VERSION}"
+        options = "-Dquarkus.application.version=${GIT_VERSION} -Dquarkus.package.type=uber-jar -Dopennlp.version=${env.OPENNLP_VERSION}"
     }
     mattermost
     nexus {
         source = "target/digator-opennlp-1.0-SNAPSHOT-runner.jar"
-        destination = "dists-internal/${APP_NAME}/digator-opennlp-${JAR_VERSION}.jar"
+        destination = "dists-internal/${APP_NAME}/digator-opennlp-${APP_VERSION}.jar"
     }
     sonarqube
     utils
