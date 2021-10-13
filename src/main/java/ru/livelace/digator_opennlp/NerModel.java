@@ -11,6 +11,7 @@ import javax.json.JsonObject;
 import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
 import opennlp.tools.tokenize.SimpleTokenizer;
+import opennlp.tools.tokenize.WhitespaceTokenizer;
 import opennlp.tools.util.Span;
 
 @ApplicationScoped
@@ -206,13 +207,13 @@ public class NerModel extends BaseModel {
      */
     private class Model {
         private final TokenNameFinderModel opennlpModel;
-        private final SimpleTokenizer opennlpTokenizer;
+        private final WhitespaceTokenizer opennlpTokenizer;
 
         public Model(String dataset, String lang, String type) throws IOException {
             var modelFile = String.format("%s/%s/%s/%s.bin", modelsPath, dataset, lang, type);
             var modelIn = new FileInputStream(modelFile);
             opennlpModel = new TokenNameFinderModel(modelIn);
-            opennlpTokenizer = SimpleTokenizer.INSTANCE;
+            opennlpTokenizer = WhitespaceTokenizer.INSTANCE;
         }
 
         public Span[] getLabel(String[] tokens) {
