@@ -35,7 +35,7 @@ libraries {
     mattermost
     nexus {
         source = "target/digator-opennlp-1.0-SNAPSHOT-runner.jar"
-        destination = "dists-internal/${APP_NAME}/${JAR_VERSION}.jar"
+        destination = "dists-internal/${APP_NAME}/digator-opennlp-${JAR_VERSION}.jar"
     }
     sonarqube
     utils
