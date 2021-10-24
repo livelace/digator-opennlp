@@ -10,7 +10,6 @@ import javax.json.Json;
 import javax.json.JsonObject;
 import opennlp.tools.namefind.NameFinderME;
 import opennlp.tools.namefind.TokenNameFinderModel;
-import opennlp.tools.tokenize.SimpleTokenizer;
 import opennlp.tools.tokenize.WhitespaceTokenizer;
 import opennlp.tools.util.Span;
 
@@ -56,6 +55,25 @@ public class NerModel extends BaseModel {
         }
 
         return extractedText.toString();
+    }
+
+    private JsonObject formatToLabelArray(String text, String[] tokens, Span[] spans) {
+        var result = Json.createObjectBuilder();
+        var items = Json.createArrayBuilder();
+
+        for (Span span: spans) {
+            var item = Json.createObjectBuilder();
+
+            var spanText = extractTextByOffset(text, tokens, span.getStart(), span.getEnd());
+
+            item.add(span.getType(), spanText);
+
+            items.add(item);
+        }
+
+        result.add("result", items);
+
+        return result.build();
     }
 
     /**
@@ -127,16 +145,24 @@ public class NerModel extends BaseModel {
      * @param spans
      * @return
      */
-    private String formatToOpennlp(String[] tokens, Span[] spans) {
+    private JsonObject formatToOpennlp(String[] tokens, Span[] spans) {
+        var result = Json.createObjectBuilder();
+        var item = Json.createObjectBuilder();
+
         for (Span span: spans) {
             tokens[span.getStart()] = String.format("<START:%s> %s", span.getType(), tokens[span.getStart()]);
             tokens[span.getEnd()-1] = String.format("%s <END>", tokens[span.getEnd()-1]);
         }
 
         var labeledString = String.join(" ", tokens);
+
         logger.debug("labeled text: \"{}\"", labeledString);
 
-        return labeledString;
+        item.add("text", labeledString);
+
+        result.add("result", item);
+
+        return result.build();
     }
 
     /**
@@ -190,11 +216,14 @@ public class NerModel extends BaseModel {
         var spans = models.get(modelSignature).getLabel(tokens);
 
         // Return labeled data in different formats.
-        if (format.equals("label-studio")) {
+        if (format.equals("label-array")) {
+            return formatToLabelArray(text, tokens, spans);
+
+        } else if (format.equals("label-studio")) {
             return formatToLabelStudio(text, tokens, spans);
 
-        } else if (format.equals("opennlp")) {
-            return json.add("text", formatToOpennlp(tokens, spans)).build();
+        }else if (format.equals("opennlp")) {
+            return formatToOpennlp(tokens, spans);
 
         } else {
             logger.error("unknown format: {}", format);
