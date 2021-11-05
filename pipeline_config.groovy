@@ -15,9 +15,9 @@ libraries {
         repo_url = "${APP_REPO}"
         repo_branch = env.VERSION
     }
-    harbor_replicate {
+    /*harbor_replicate {
         policy = "${APP_NAME}"
-    }
+    }*/
     k8s_build {
         image = "harbor-core.k8s-2.livelace.ru/dev/jvm:latest"
 
