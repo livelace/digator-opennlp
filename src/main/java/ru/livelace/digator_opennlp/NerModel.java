@@ -113,6 +113,12 @@ public class NerModel extends BaseModel {
             var from = textBefore.length();
             var to = from + spanText.length();
 
+            // Exclude "," and "." at the end of persons.
+            if (span.getType().startsWith("PER") && (spanText.endsWith(",") || spanText.endsWith("."))) {
+                spanText = spanText.substring(0, spanText.length() - 1);
+                to -= 1;
+            }
+
             logger.debug("span info: type: {}, start: {}, end: {}, range: {}:{}, text before: \"{}\", text: \"{}\"",
                     span.getType(), span.getStart(), span.getEnd(), from, to, textBefore, spanText);
 
@@ -151,7 +157,18 @@ public class NerModel extends BaseModel {
 
         for (Span span: spans) {
             tokens[span.getStart()] = String.format("<START:%s> %s", span.getType(), tokens[span.getStart()]);
-            tokens[span.getEnd()-1] = String.format("%s <END>", tokens[span.getEnd()-1]);
+
+            // Exclude "," and "." at the end of persons.
+            if (span.getType().startsWith("PER") &&
+                    (tokens[span.getEnd()-1].endsWith(",") || tokens[span.getEnd()-1].endsWith("."))) {
+
+                var lastToken = tokens[span.getEnd()-1];
+                tokens[span.getEnd()-1] = String.format("%s <END>%s",
+                        lastToken.substring(0, lastToken.length()-1), lastToken.charAt(lastToken.length()-1));
+
+            } else {
+                tokens[span.getEnd()-1] = String.format("%s <END>", tokens[span.getEnd()-1]);
+            }
         }
 
         var labeledString = String.join(" ", tokens);
