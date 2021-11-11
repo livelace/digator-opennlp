@@ -19,7 +19,7 @@ import opennlp.tools.util.Span;
 public class NerModel extends BaseModel {
     private static final int MAX_SPACES = 10;
     private final HashMap<String, Model> models;
-    private static Pattern punctEndPattern = Pattern.compile("\\p{Punct}$");
+    private static final Pattern punctEndPattern = Pattern.compile("\\p{Punct}$");
 
     public NerModel() {
         this.logger = org.slf4j.LoggerFactory.getLogger(NerModel.class);
