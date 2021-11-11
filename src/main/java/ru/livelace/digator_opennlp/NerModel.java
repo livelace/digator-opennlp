@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.regex.Pattern;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.json.Json;
@@ -18,6 +19,7 @@ import opennlp.tools.util.Span;
 public class NerModel extends BaseModel {
     private static final int MAX_SPACES = 10;
     private final HashMap<String, Model> models;
+    private static Pattern punctEndPattern = Pattern.compile("\\p{Punct}$");
 
     public NerModel() {
         this.logger = org.slf4j.LoggerFactory.getLogger(NerModel.class);
@@ -114,7 +116,7 @@ public class NerModel extends BaseModel {
             var to = from + spanText.length();
 
             // Exclude "," and "." at the end of persons.
-            if (span.getType().startsWith("PER") && (spanText.endsWith(",") || spanText.endsWith("."))) {
+            if (span.getType().startsWith("PER") && punctEndPattern.matcher(spanText).find()) {
                 spanText = spanText.substring(0, spanText.length() - 1);
                 to -= 1;
             }
@@ -160,7 +162,7 @@ public class NerModel extends BaseModel {
             var lastToken = tokens[span.getEnd()-1];
 
             // Exclude "," and "." from the end of persons.
-            if (span.getType().startsWith("PER") && (lastToken.endsWith(",") || lastToken.endsWith("."))) {
+            if (span.getType().startsWith("PER") && punctEndPattern.matcher(lastToken).find()) {
                 tokens[span.getEnd()-1] = String.format("%s <END>%s",
                         lastToken.substring(0, lastToken.length()-1), lastToken.charAt(lastToken.length()-1));
 
