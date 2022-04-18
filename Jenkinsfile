@@ -1,4 +1,10 @@
 properties([
+    buildDiscarder(logRotator(
+        artifactDaysToKeepStr: '',
+        artifactNumToKeepStr: '',
+        daysToKeepStr: '30',
+        numToKeepStr: '30'
+    )),
     parameters([
         [
             $class              : 'CascadeChoiceParameter',
