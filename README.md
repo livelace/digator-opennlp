@@ -48,3 +48,8 @@ curl -X POST "http://127.0.0.1:8080/sentence/news/ru" \
 Navigate to [http://127.0.0.1:8080](http://127.0.0.1:8080) for [Swagger UI](https://swagger.io/tools/swagger-ui/) experience.
 
 ![swagger](assets/swagger.png)
+
+### Credits:
+<br>
+
+[![main](assets/jetbrains.png)](https://www.jetbrains.com/ides/)
